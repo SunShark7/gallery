@@ -229,6 +229,50 @@ function createRings() {
 	scene.add(rings.group);
 }
 
+var obj;
+function createTetrahedron() {
+		obj = [];
+		var group = new THREE.Group();
+	
+		while(obj.length < 60){
+			var item = new Tetrahedron();
+			obj.push(item);
+		}
+	
+		for (var i = 0; i < obj.length; i++) {
+			group.add(obj[i].shape);
+		}
+		
+		group.rotation.z = 360;
+		group.rotation.y = 20;
+		group.position.x = 0;
+		group.position.y = -20;
+		group.position.z = 6;
+		scene.add(group);
+}
+
+Tetrahedron = function() {
+	var colors = [0xDE5006, 0x42447, 0xC0A468, 0xF38D58, 0x615173];
+	this.size = Math.random();
+	this.color = colors[Math.floor(Math.random()*colors.length)];
+	
+	this.geometry = new THREE.TetrahedronGeometry(this.size*10,0);
+	this.material = new THREE.MeshLambertMaterial({color: this.color, flatShading : true});
+	this.shape = new THREE.Mesh(this.geometry,this.material);
+	this.circle_rotation = Math.random() * Math.PI * 2;
+	this.shape.castShadow = false;
+	this.shape.receiveShadow = true;
+	this.circle = Math.floor((Math.random()*100)+100);
+	
+	this.animate = function() {
+		this.shape.position.y = Math.sin(this.circle_rotation)*this.circle;
+		this.shape.position.z = Math.cos(this.circle_rotation)*this.circle;
+		this.shape.rotation.x += this.size*0.05;
+		this.shape.rotation.z += this.size*0.1;
+		this.circle_rotation += 0.002;
+	}
+}
+
 Rings = function() {
 	var r=410;
     var s_r=r/20+Math.sin(0)*r/20;
@@ -1179,6 +1223,14 @@ function renderRing() {
 	renderer.render(scene, camera);
 }
 
+function tetrahedronAnimate() {
+	requestAnimationFrame( tetrahedronAnimate );
+	renderer.render( scene, camera );
+	for (var i = 0; i < obj.length; i++) {
+			obj[i].animate();
+	};
+}
+
 init();
 createLights();
 createFloor();
@@ -1192,7 +1244,9 @@ createRings();
 createSky();
 createFlower();
 createText();
+createTetrahedron();
 loop();
+tetrahedronAnimate();
 
 
 function clamp(v,min, max){
@@ -1206,5 +1260,4 @@ function rule3(v,vmin,vmax,tmin, tmax){
   var dt = tmax-tmin;
   var tv = tmin + (pc*dt);
   return tv;
-  
 }

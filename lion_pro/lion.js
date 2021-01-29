@@ -260,7 +260,7 @@ Tetrahedron = function() {
 	this.material = new THREE.MeshLambertMaterial({color: this.color, flatShading : true});
 	this.shape = new THREE.Mesh(this.geometry,this.material);
 	this.circle_rotation = Math.random() * Math.PI * 2;
-	this.shape.castShadow = false;
+	this.shape.castShadow = true;
 	this.shape.receiveShadow = true;
 	this.circle = Math.floor((Math.random()*100)+100);
 	

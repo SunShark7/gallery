@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title></title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				outline: 0;
+			}
+			html, body {
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+			}
+			.btn-wrap {
+				position: absolute;
+				font-size: 16px;
+				z-index: 2;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-direction: column;
+				background: #000;
+			}
+			#startBtn {
+				background: transparent;
+				border: 0;
+				border: 1px solid rgb(255, 255, 255);
+				border-radius: 4px;
+				color: #ffffff;
+				padding: 12px 18px;
+				text-transform: uppercase;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="btn-wrap" id="overlay">
+			<button id="startBtn">Play / 播放</button>
+		</div>
+		<script src="../js/three.r124.min.js"></script>
+		<!-- <script src="../js/Stats.js"></script> -->
+		<!-- <script src="../js/OrbitControls.js"></script> -->
+		<script>
+			var camera, controls, scene, renderer,
+				geometry, material, mesh, 
+				earthGeo, earthTexture, earthMat, earthMesh,
+				cloudGeo, cloudTexture, cloudMat, cloudMesh;
+				
+			var HEIGHT, WIDTH, windowHalfX, windowHalfY;
+			
+			//Start button
+			const startBtn = document.getElementById('startBtn');
+			startBtn.addEventListener('click', () => {
+				document.getElementById('overlay').style.display = 'none'
+				init();
+				animate();
+			})
+			
+			function init() {
+				// stats = new Stats();
+				// stats.setMode(0);
+				// stats.domElement.style.position = 'absolute';
+				// stats.domElement.style.left = '0px';
+				// stats.domElement.style.top = '0px';
+				// document.body.appendChild(stats.domElement);
+				
+				clock = new THREE.Clock();
+				
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				
+				scene = new THREE.Scene();
+				
+				camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+				camera.position.z = 1000;
+				scene.add(camera);
+				
+				window.addEventListener('resize', onWindowResize, false);
+				// controls = new THREE.OrbitControls( camera, renderer.domElement);
+				
+				//Audio
+				const listener = new THREE.AudioListener();
+				camera.add(listener);
+				
+				const sound = new THREE.Audio(listener);
+				
+				const audioLoader = new THREE.AudioLoader();
+				var musicUrl = '../asset/worthyOfItAll.m4a';
+				audioLoader.load(musicUrl, function(buffer) {
+					sound.setBuffer( buffer );
+					sound.setLoop(true);
+					sound.setVolume(0.8);
+					sound.play();
+				})
+				
+				geometry = new THREE.CubeGeometry(200,200,200);
+				material = new THREE.MeshLambertMaterial({color: 0xaa6666, wireframe: false});
+				mesh = new THREE.Mesh(geometry, material);
+				cubeSineDriver = 0;
+				
+				textGeo = new THREE.PlaneGeometry(300,300);
+				textTexture = new THREE.TextureLoader().load('../img/worthyOfItAll.png');
+				textMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff, opacity: 1, map: textTexture, transparent: true, blending: THREE.AdditiveBlending});
+				text = new THREE.Mesh(textGeo, textMaterial);
+				text.position.z = 700;
+				scene.add(text);
+				
+				light = new THREE.DirectionalLight(0xffffff,0.5);
+				light.position.set(-1,0,1);
+				scene.add(light);
+				
+				var ambientLight = new THREE.AmbientLight(0x404040);
+				// scene.add(ambientLight);
+				
+				// smokeTexture = new THREE.TextureLoader().load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/95637/Smoke-Element.png');
+				smokeTexture = new THREE.TextureLoader().load('../img/Smoke-Element.png'); //#00dddd 
+				smokeMaterial = new THREE.MeshLambertMaterial({color:0x00dddd, map: smokeTexture, transparent:true, opacity: 0.8});
+				smokeGeo = new THREE.PlaneGeometry(300,300);
+				smokeParticles = [];
+				
+				for (p = 0; p < 25; p++) { 
+					var particle = new THREE.Mesh(smokeGeo, smokeMaterial);
+					// particle.position.set(Math.random()*500-250,Math.random()*500-250,Math.random()*1000-100);
+					particle.position.set(Math.random()*500-250,Math.random()*500-250,Math.random()*200+600);
+					scene.add(particle);
+					smokeParticles.push(particle);
+				}
+				
+				//Earth 
+				earthGeo = new THREE.SphereGeometry(200, 32, 32);
+				earthTexture = new THREE.TextureLoader().load('../img/earthmap1k.jpg')
+				earthMat = new THREE.MeshPhongMaterial({
+					map: earthTexture, 
+					bumpMap: new THREE.TextureLoader().load('../img/earthbump1k.jpg'),
+					bumpScale: 0.05,
+					specularMap: new THREE.TextureLoader().load('../img/earthspec1k.jpg'),
+					specular: new THREE.Color('grey')
+				});
+				earthMesh = new THREE.Mesh(earthGeo,earthMat);
+				earthMesh.position.z = 290;
+				scene.add(earthMesh);
+				
+				cloudGeo = new THREE.SphereGeometry(200.1, 32, 32);
+				//earthcloudmaptrans earthcloudmap
+				cloudTexture = new THREE.TextureLoader().load('../img/earthcloudmap.jpg')
+				cloudMat = new THREE.MeshPhongMaterial({
+					map: cloudTexture,
+					side: THREE.DoubleSide,
+					opacity: 0.5,
+					transparent: true,
+					depthWrite: false
+				})
+				cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+				earthMesh.add(cloudMesh);
+				
+				document.body.appendChild(renderer.domElement);
+			}
+			
+			function onWindowResize() {
+				WIDTH = window.innerWidth;
+				HEIGHT = window.innerHeight;
+				windowHalfX = WIDTH / 2;
+				windowHalfY = HEIGHT / 2;
+				renderer.setSize(WIDTH,HEIGHT);
+				camera.aspect = WIDTH / HEIGHT;
+				camera.updateProjectionMatrix();
+			}
+			
+			function animate() {
+				// stats.begin();
+				delta = clock.getDelta();
+				requestAnimationFrame(animate);
+				evolveSmoke();
+				render();
+				// stats.end();
+			}
+			
+			function evolveSmoke() {
+				var sp = smokeParticles.length;
+				while(sp--) {
+					smokeParticles[sp].rotation.z += (delta*0.2);
+				}
+			}
+			
+			function render() {
+				if (controls) controls.update();
+				
+				mesh.rotation.x += 0.005;
+				mesh.rotation.y += 0.01;
+				cubeSineDriver += .01;
+				mesh.position.z = 100 + (Math.sin(cubeSineDriver)*500);
+				earthMesh.rotation.y += 1/32 * delta;
+				
+				renderer.render(scene,camera);
+			}
+			
+		</script>
+	</body>
+</html>

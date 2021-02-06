@@ -207,7 +207,7 @@ function createFlower() {
 function createText() {
 	var textV = new Text('V');
 	textV.threegroup.position.z = 300;
-	textV.threegroup.position.x = -180;
+	textV.threegroup.position.x = -190;
 	textV.threegroup.position.y = -265;
 	scene.add(textV.threegroup);
 	
@@ -584,7 +584,7 @@ Text = function (val) {
 	loader.load('helvetiker_regular.typeface.json', function(font) {
 		 textGeom = new THREE.TextGeometry(val, {
 			font: font,
-			size: 20,
+			size: 15,
 			height: 8,
 			curveSegments: 4,
 			bevelThickness: 2,

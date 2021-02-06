@@ -207,7 +207,7 @@ function createFlower() {
 function createText() {
 	var textV = new Text('V');
 	textV.threegroup.position.z = 300;
-	textV.threegroup.position.x = -190;
+	textV.threegroup.position.x = -120;
 	textV.threegroup.position.y = -265;
 	scene.add(textV.threegroup);
 	
@@ -218,7 +218,7 @@ function createText() {
 	
 	var textL = new Text('L');
 	textL.threegroup.position.z = 300;
-	textL.threegroup.position.x = 180;
+	textL.threegroup.position.x = 120;
 	textL.threegroup.position.y = -265;
 	scene.add(textL.threegroup);
 }

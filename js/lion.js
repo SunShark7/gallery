@@ -208,18 +208,18 @@ function createText() {
 	var textV = new Text('V');
 	textV.threegroup.position.z = 300;
 	textV.threegroup.position.x = -120;
-	textV.threegroup.position.y = -265;
+	textV.threegroup.position.y = -230;
 	scene.add(textV.threegroup);
 	
 	var textJ = new Text('J');
 	textJ.threegroup.position.z = 300;
-	textJ.threegroup.position.y = -265;
+	textJ.threegroup.position.y = -230;
 	scene.add(textJ.threegroup);
 	
 	var textL = new Text('L');
 	textL.threegroup.position.z = 300;
 	textL.threegroup.position.x = 120;
-	textL.threegroup.position.y = -265;
+	textL.threegroup.position.y = -230;
 	scene.add(textL.threegroup);
 }
 
@@ -581,7 +581,7 @@ Text = function (val) {
 	const loader = new THREE.FontLoader();
 	var textGeom, textMesh; //#EA7564
 	var textMat = new THREE.MeshPhongMaterial({ color: 0xEA7564, flatShading: true });
-	loader.load('helvetiker_regular.typeface.json', function(font) {
+	loader.load('../asset/helvetiker_regular.typeface.json', function(font) {
 		 textGeom = new THREE.TextGeometry(val, {
 			font: font,
 			size: 15,

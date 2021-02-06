@@ -49,14 +49,14 @@ function init(){
     aspectRatio,
     nearPlane,
     farPlane);
-  camera.position.z = 800;  
+  camera.position.z = 735;
   camera.position.y = 0;
-  camera.lookAt(new THREE.Vector3(0,0,0));    
+  camera.lookAt(new THREE.Vector3(0,0,0));
   renderer = new THREE.WebGLRenderer({alpha: true, antialias: true });
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize(WIDTH, HEIGHT);
   // x=red, y=green, z=blue
-  var axisHelper = new THREE.AxesHelper( 500 );
+  // var axisHelper = new THREE.AxesHelper( 500 );
   // scene.add(axisHelper);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -207,19 +207,19 @@ function createFlower() {
 function createText() {
 	var textV = new Text('V');
 	textV.threegroup.position.z = 300;
-	textV.threegroup.position.x = -220;
-	textV.threegroup.position.y = -170;
+	textV.threegroup.position.x = -180;
+	textV.threegroup.position.y = -265;
 	scene.add(textV.threegroup);
 	
 	var textJ = new Text('J');
 	textJ.threegroup.position.z = 300;
-	textJ.threegroup.position.y = -170;
+	textJ.threegroup.position.y = -265;
 	scene.add(textJ.threegroup);
 	
 	var textL = new Text('L');
 	textL.threegroup.position.z = 300;
-	textL.threegroup.position.x = 220;
-	textL.threegroup.position.y = -170;
+	textL.threegroup.position.x = 180;
+	textL.threegroup.position.y = -265;
 	scene.add(textL.threegroup);
 }
 
@@ -579,8 +579,8 @@ Text = function (val) {
 	this.threegroup = new THREE.Group();
 	var that = this
 	const loader = new THREE.FontLoader();
-	var textGeom, textMesh;
-	var textMat = new THREE.MeshPhongMaterial({ color: 0x653f4c, flatShading: true });
+	var textGeom, textMesh; //#EA7564
+	var textMat = new THREE.MeshPhongMaterial({ color: 0xEA7564, flatShading: true });
 	loader.load('helvetiker_regular.typeface.json', function(font) {
 		 textGeom = new THREE.TextGeometry(val, {
 			font: font,
@@ -1023,15 +1023,15 @@ Lion = function(type){
   }
   
   if (type == 'lion2') {
-	  this.threegroup.position.x = -300;
+	  this.threegroup.position.x = -260;
   }
   
   if (type == 'lion3') {
-	  this.threegroup.position.x = 300;
+	  this.threegroup.position.x = 260;
 	  this.threegroup.position.y = -50;
 	  this.threegroup.scale.set(0.5,0.5,0.5);
   }
-    
+  
   this.threegroup.traverse( function ( object ) {
 		if ( object instanceof THREE.Mesh ) {
 			object.castShadow = true;

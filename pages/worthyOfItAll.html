@@ -112,7 +112,7 @@
 				textMaterial = new THREE.MeshLambertMaterial({color: 0x00ffff, opacity: 1, map: textTexture, transparent: true, blending: THREE.AdditiveBlending});
 				text = new THREE.Mesh(textGeo, textMaterial);
 				text.position.z = 700;
-				text.scale(0.8,0.8,0.8);
+				text.scale.set(0.8,0.8,0.8);
 				scene.add(text);
 				
 				light = new THREE.DirectionalLight(0xffffff,0.5);

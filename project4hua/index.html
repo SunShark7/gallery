@@ -223,7 +223,7 @@
 				  box.geometry.__dirtyVertices = true;
 				  box.geometry.dynamic = true;
 				  particle.targetPosition = new THREE.Vector3((textPixels[i].x - (width / 2)) * 4, (textPixels[i].y) * 5, -10 * Math.random() + 20);
-				  particle.position.set(width * 0.5, height * 0.5, -10 * Math.random() + 20);
+				  particle.position.set(width * 0.5,  height * 0.5, -10 * Math.random() + 20);
 				  randomPos(particle.position);
 				
 				  for (var i = 0; i < box.geometry.vertices.length; i++) {
@@ -290,7 +290,7 @@
 				function initInput() {
 				  input = document.getElementById('input');
 				  input.addEventListener('keyup', updateText);
-				  input.value = 'hua,生日快乐';
+				  input.value = 'hua,生日快乐!';
 				}
 				
 				function updateText() {
@@ -337,9 +337,6 @@
 				initInput();
 				animate();
 				updateText();
-				setTimeout(() => {
-					moveCamera();
-				}, 4000)
 				//损耗性能 
 				// setTimeout(function() {
 				//   updateText();
